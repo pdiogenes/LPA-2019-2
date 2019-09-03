@@ -51,6 +51,7 @@ int main(){
             for(int i = 0; i < numEntradas; i++){
                 int la = linhas[i].length();
                 la = m - la;
+                //cout << "sera inserido " << la << " espaços:" << endl;
                 while(la--){
                     cout << " ";
                 }
