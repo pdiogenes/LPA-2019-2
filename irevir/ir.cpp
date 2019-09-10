@@ -10,7 +10,7 @@ class Graph{
 public:
     Graph(int size);
     void addEdge(int s, int d);
-    list<bool> temCaminho();
+    bool temCaminho(int s, int d);
 };
 
 Graph::Graph(int size){
@@ -22,67 +22,64 @@ void Graph::addEdge(int s, int d){
     adj[s].push_back(d);
 }
 
-list<bool> Graph::temCaminho(){
-    
-    list<bool> r;
-
-    
-
-    for(size_t i = 0; i < size; i++){
-        for(size_t j = i; j < size; j++){
-            bool *visited = new bool[size];
-            for(size_t i = 0; i < size; i++) visited[i] = false;
-            
-            cout << "executando de " << i << " para " << j << endl;
-            DFSutil(i, visited);
-            if(visited[j]) r.push_back(true); 
-        }
-    }
-
-    return r;
-}
-
 void Graph::DFSutil(int v, bool visited[]){
     visited[v] = true;
-    cout << "visitou vertice " << v << endl;
 
     list<int>::iterator i;
     for(i = adj[v].begin(); i != adj[v].end(); i++){
         if(!visited[*i]) DFSutil(*i, visited);
     }
+}
 
+bool Graph::temCaminho(int s, int d){
+    bool *visited = new bool[size];
+    for(size_t i = 0; i < size; i++){
+        visited[i] = false;
+    }
+
+    DFSutil(s, visited);
+    return visited[d] ? true : false;
 }
 
 int main(){
     bool read = true;
+    int N, M;
 
     while(read){
-        int N, M;
         cin >> N >> M;
 
         if(N == 0 && M == 0) read = false;
         else{
-            Graph g(M);
+            Graph g(N);
             int V, W, P;
             for (size_t i = 0; i < M; i++){
                 cin >> V >> W >> P;
                 V--; W--;
 
                 if(P == 1){
+                    //cout << "vai de " << V << " para " << W << endl;
                     g.addEdge(V, W);
-                    cout << "vai de " << V << " para " << W << endl;
                 }
                 else{
+                    //cout << "vai de " << V << " para " << W << " e vice versa" << endl;
                     g.addEdge(V, W);
                     g.addEdge(W, V);
-                    cout << "vai de " << V << " para " << W << " e vice versa" << endl;
                 }
                 
             }
-            list<bool> r = g.temCaminho();
 
-            //r ? cout << "1" : cout << "0";
-            //cout << endl;
+            for(size_t i = 0; i < N; i++){
+                for(size_t j = 0; j < N; j++){
+                    if(!g.temCaminho(i, j)){
+                        cout << "0" << endl;
+                        i = N; j = N;
+                        break;
+                    }
+                    else if(i == N-1 && j == N-1 && g.temCaminho(i, j)){
+                        cout << "1" << endl;
+                    }
+                }
+            }
         
         }
     }
